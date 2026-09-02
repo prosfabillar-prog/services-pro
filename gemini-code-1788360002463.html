@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wyze Prototype - Precise Clickable Flow</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #e5e5e5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .prototype-container {
+            display: grid;
+            width: 100%; 
+            max-width: 1440px;
+            aspect-ratio: 16 / 9;
+            background: #ffffff;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .screen {
+            grid-area: 1 / 1;
+            position: relative;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease-in-out;
+        }
+
+        .screen.active {
+            opacity: 1;
+            visibility: visible;
+            z-index: 2;
+        }
+
+        .screen img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            pointer-events: none;
+        }
+
+        .hotspot {
+            position: absolute;
+            cursor: pointer;
+            background: rgba(81, 50, 255, 0); 
+            transition: background 0.2s;
+            border-radius: 4px;
+            z-index: 10;
+        }
+
+        /* Hover effect to verify alignment */
+        .hotspot:hover {
+            background: rgba(81, 50, 255, 0.2); 
+        }
+
+        /* ================= PRECISE HOTSPOT COORDINATES ================= */
+        
+        /* Global Sidebar Menu */
+        .hs-nav-overview { top: 22%; left: 0%; width: 16%; height: 5.5%; }
+        .hs-nav-events { top: 28%; left: 0%; width: 16%; height: 5.5%; }
+        .hs-nav-plans { top: 34%; left: 0%; width: 16%; height: 5.5%; }
+
+        /* Dropdown Menu (ssss.png) */
+        .hs-menu-myplans { top: 32%; left: 14.5%; width: 15%; height: 4.5%; }
+        .hs-menu-payment { top: 37%; left: 14.5%; width: 15%; height: 4.5%; }
+        .hs-menu-history { top: 42%; left: 14.5%; width: 15%; height: 4.5%; }
+
+        /* Camera Box (Overview) */
+        .hs-camera-dropdown { top: 25.5%; left: 20.3%; width: 16%; height: 4.5%; border-radius: 20px; }
+        .hs-dropdown-view { top: 46%; left: 38.6%; width: 5.5%; height: 4.5%; border-radius: 6px; }
+
+        /* Actions */
+        .hs-manage-plan { top: 54%; left: 86.5%; width: 8.5%; height: 4.5%; }
+        .hs-compare-plans { top: 64.5%; left: 66.8%; width: 24.5%; height: 6%; border-radius: 30px; }
+        .hs-view-addons { top: 71%; left: 83%; width: 14%; height: 10%; border-radius: 4px; }
+        
+        /* Add Payment Method Links & Buttons */
+        .hs-add-payment-btn { top: 48.5%; left: 20.6%; width: 15.5%; height: 5%; border-radius: 4px; }
+        .hs-add-payment-link-1 { top: 62.5%; left: 45.2%; width: 9.5%; height: 2%; } /* For ssss.png */
+        .hs-add-payment-link-2 { top: 47.5%; left: 45.8%; width: 9.5%; height: 2%; } /* For Browse all addon_3.png.png */
+        
+        /* Manageplan.png Actions */
+        .hs-return-to-wyze { top: 47.5%; left: 4.2%; width: 8.5%; height: 3%; }
+
+        /* Precise Back Buttons */
+        .hs-back-payment { top: 19.5%; left: 20.5%; width: 11%; height: 4%; }
+        .hs-back-history { top: 22.5%; left: 20.5%; width: 11%; height: 4%; }
+        .hs-back-change-plan { top: 31%; left: 14.5%; width: 11%; height: 4%; }
+        .hs-back-manage-plan { top: 26.5%; left: 17.2%; width: 11%; height: 4%; }
+
+        /* Navigation between top and bottom of Plans Page */
+        .hs-scroll-down { top: 85%; left: 17%; width: 80%; height: 15%; border-radius: 12px; }
+        .hs-scroll-up { top: 10%; left: 17%; width: 80%; height: 20%; border-radius: 12px; }
+
+        /* Quick Links on Browse Addon Page */
+        .hs-quicklink-payment { top: 85%; left: 18.5%; width: 25.5%; height: 10%; border-radius: 8px;}
+        .hs-quicklink-history { top: 85%; left: 45%; width: 25.5%; height: 10%; border-radius: 8px;}
+
+    </style>
+</head>
+<body>
+    <div class="prototype-container">
+        
+        <!-- Screen 1: Overview -->
+        <div id="screen-overview" class="screen active">
+            <img src="Overview_3.jpg" alt="Overview">
+            <div class="hotspot hs-nav-events" onclick="goToStep('screen-events')" title="Events"></div>
+            <div class="hotspot hs-nav-plans" onclick="goToStep('screen-plans')" title="Plans & Billing"></div>
+            <div class="hotspot hs-camera-dropdown" onclick="goToStep('screen-overview-dropdown')" title="Camera Options"></div>
+        </div>
+
+        <!-- Screen 1.5: Overview Dropdown Open -->
+        <div id="screen-overview-dropdown" class="screen">
+            <img src="Chat%20Wyze%20Cam%20v3%20Pro.png" alt="Camera Dropdown">
+            <div class="hotspot hs-nav-events" onclick="goToStep('screen-events')" title="Events"></div>
+            <div class="hotspot hs-nav-plans" onclick="goToStep('screen-plans')" title="Plans & Billing"></div>
+            <div class="hotspot hs-camera-dropdown" onclick="goToStep('screen-overview')" title="Close Options"></div>
+            <div class="hotspot hs-dropdown-view" onclick="goToStep('screen-overview')" title="View Cameras"></div>
+        </div>
+
+        <!-- Screen 2: Events -->
+        <div id="screen-events" class="screen">
+            <img src="Events.png" alt="Events">
+            <div class="hotspot hs-nav-overview" onclick="goToStep('screen-overview')" title="Overview"></div>
+            <div class="hotspot hs-nav-plans" onclick="goToStep('screen-plans')" title="Plans & Billing"></div>
+        </div>
+
+        <!-- Screen 3: Plans & Billing (Top Half - ssss.png) -->
+        <div id="screen-plans" class="screen">
+            <img src="ssss.png" alt="Plans and Billing">
+            <div class="hotspot hs-nav-overview" onclick="goToStep('screen-overview')" title="Overview"></div>
+            <div class="hotspot hs-nav-events" onclick="goToStep('screen-events')" title="Events"></div>
+            <div class="hotspot hs-menu-myplans" onclick="goToStep('screen-plans')" title="My Plans"></div>
+            <div class="hotspot hs-menu-payment" onclick="goToStep('screen-payment')" title="Payment"></div>
+            <div class="hotspot hs-menu-history" onclick="goToStep('screen-history')" title="Billing History"></div>
+            <div class="hotspot hs-manage-plan" onclick="goToStep('screen-change-plan')" title="Manage Plan"></div>
+            
+            <!-- Red "Add a payment method" text link -->
+            <div class="hotspot hs-add-payment-link-1" onclick="goToStep('screen-manage-subscription')" title="Add Payment Method"></div>
+
+            <div class="hotspot hs-scroll-down" onclick="goToStep('screen-plans-2')" title="Scroll Down"></div>
+        </div>
+
+        <!-- Screen 3.5: Plans & Billing (Bottom Half - Browse all addon_3.png.png) -->
+        <div id="screen-plans-2" class="screen">
+            <img src="Browse%20all%20addon_3.png.png" alt="Browse Addons">
+            <div class="hotspot hs-nav-overview" onclick="goToStep('screen-overview')" title="Overview"></div>
+            <div class="hotspot hs-nav-events" onclick="goToStep('screen-events')" title="Events"></div>
+            
+            <div class="hotspot hs-scroll-up" onclick="goToStep('screen-plans')" title="Scroll Up"></div>
+
+            <!-- Red "Add a payment method" text link -->
+            <div class="hotspot hs-add-payment-link-2" onclick="goToStep('screen-manage-subscription')" title="Add Payment Method"></div>
+
+            <div class="hotspot hs-view-addons" onclick="goToStep('screen-view-all-addons')" title="View All Add-ons"></div>
+            <div class="hotspot hs-quicklink-payment" onclick="goToStep('screen-payment')" title="Manage Payments"></div>
+            <div class="hotspot hs-quicklink-history" onclick="goToStep('screen-history')" title="View Billing History"></div>
+        </div>
+
+        <!-- Screen 4: Payment -->
+        <div id="screen-payment" class="screen">
+            <img src="Payment.png" alt="Payment">
+            <div class="hotspot hs-nav-overview" onclick="goToStep('screen-overview')" title="Overview"></div>
+            <div class="hotspot hs-nav-events" onclick="goToStep('screen-events')" title="Events"></div>
+            <div class="hotspot hs-nav-plans" onclick="goToStep('screen-plans')" title="Plans & Billing"></div>
+            <div class="hotspot hs-back-payment" onclick="goToStep('screen-plans')" title="Back to My Plans"></div>
+            
+            <!-- Purple "+ Add payment method" button -->
+            <div class="hotspot hs-add-payment-btn" onclick="goToStep('screen-manage-subscription')" title="Add Payment Method"></div>
+        </div>
+
+        <!-- Screen 5: Billing History -->
+        <div id="screen-history" class="screen">
+            <img src="Billing%202%20History%20.png" alt="Billing History">
+            <div class="hotspot hs-nav-overview" onclick="goToStep('screen-overview')" title="Overview"></div>
+            <div class="hotspot hs-nav-events" onclick="goToStep('screen-events')" title="Events"></div>
+            <div class="hotspot hs-nav-plans" onclick="goToStep('screen-plans')" title="Plans & Billing"></div>
+            <div class="hotspot hs-back-history" onclick="goToStep('screen-plans')" title="Back to My Plans"></div>
+        </div>
+
+        <!-- Screen 6: Change Plan (Initial) -->
+        <div id="screen-change-plan" class="screen">
+            <img src="Change%20Plan.png" alt="Change Plan">
+            <div class="hotspot hs-back-change-plan" onclick="goToStep('screen-plans')" title="Back to My Plans"></div>
+            <div class="hotspot hs-compare-plans" onclick="goToStep('screen-manage-plan-option')" title="View Plan Options"></div>
+        </div>
+
+        <!-- Screen 7: Manage Plan Options (Detailed) -->
+        <div id="screen-manage-plan-option" class="screen">
+            <img src="Manage%20Plan%20opion.png" alt="Manage Plan Option">
+            <div class="hotspot hs-back-manage-plan" onclick="goToStep('screen-plans')" title="Back to My Plans"></div>
+        </div>
+
+        <!-- Screen 8: View All Add-ons -->
+        <div id="screen-view-all-addons" class="screen">
+            <img src="view%20all%20addon.png" alt="View All Add-ons">
+            <div class="hotspot hs-back-manage-plan" onclick="goToStep('screen-plans-2')" title="Back to My Plans"></div>
+        </div>
+
+        <!-- Screen 9: Manage Subscription (Stripe Page) -->
+        <div id="screen-manage-subscription" class="screen">
+            <img src="Manageplan.png" alt="Manage Subscription">
+            <div class="hotspot hs-return-to-wyze" onclick="goToStep('screen-payment')" title="Return to Wyze"></div>
+        </div>
+
+    </div>
+
+    <script>
+        // Screen navigation logic
+        function goToStep(stepId) {
+            const screens = document.querySelectorAll('.screen');
+            screens.forEach(screen => {
+                screen.classList.remove('active');
+            });
+            const target = document.getElementById(stepId);
+            if(target) {
+                target.classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>
